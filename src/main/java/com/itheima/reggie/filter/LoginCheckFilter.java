@@ -42,7 +42,9 @@ public class LoginCheckFilter implements Filter {
                 "/employee/logout",
                 "/backend/**", //静态资源
                 "/front/**",
-                "/common/**"
+                "/common/**",
+                "/user/sendMsg", //发送短信登录验证
+                "/user/login" //用户登录
         };
 
         //2.判断本次请求是否需要处理
@@ -55,7 +57,7 @@ public class LoginCheckFilter implements Filter {
         }
 
 
-        //4.判断登录状态，如果是已登录，则直接放行
+        //4.1 判断登录状态，如果是已登录，则直接放行
         if(request.getSession().getAttribute("employee")!=null){
             log.info("用户已登陆：{} id为："+request.getSession().getAttribute("employee"));
 /*            //记录当前线程id
@@ -65,7 +67,16 @@ public class LoginCheckFilter implements Filter {
             BaseContext.setCurrentId(empID);
             chain.doFilter(request,response);
             return;
-        }                                                                               
+        }
+
+        //4.2 判断登录状态，如果是已登录，则直接放行
+        if(request.getSession().getAttribute("user")!=null){
+            log.info("用户已登录：{} id为："+request.getSession().getAttribute("user"));
+            Long empID = (Long) request.getSession().getAttribute("user");
+            BaseContext.setCurrentId(empID);
+            chain.doFilter(request,response);
+            return;
+        }
         log.info("用户未登录：{}");
 
         //5.如果未登录则返回未登录的结果,通过输出流的方式向客户端响应数据

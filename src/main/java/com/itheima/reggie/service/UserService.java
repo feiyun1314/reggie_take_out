@@ -1,5 +1,9 @@
 package com.itheima.reggie.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.itheima.reggie.entity.User;
+import org.springframework.stereotype.Service;
+
 /**
  * TODO
  *
@@ -8,5 +12,5 @@ package com.itheima.reggie.service;
  * @explain
  */
 
-public interface UserService {
+public interface UserService extends IService<User> {
 }
