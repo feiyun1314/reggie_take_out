@@ -173,6 +173,7 @@ public class DishController {
      */
     @DeleteMapping
     public R<String> deleteById(Long[] ids){
+        //TODO 有问题，没有判断是否为停售状态，起售状态的菜品不能删除
         //根据id 删除菜品信息和对应的口味信息
         for (Long id : ids) {
             //根据id 删除菜品信息
@@ -184,5 +185,30 @@ public class DishController {
         }
         return R.success("删除成功！！！！");
     }
+
+    /**
+     * 根据条件来查询对应的菜品数据
+     * @param dish
+     * @return
+     */
+
+    @GetMapping("/list")
+    public R<List<Dish>> list(Dish dish){
+
+        log.info("caipin id:"+dish.toString());
+        LambdaQueryWrapper<Dish> queryWrapper =new LambdaQueryWrapper<>();
+        //条件查询
+        queryWrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId,dish.getCategoryId());
+        //添加条件起售状态为1的菜品
+        queryWrapper.eq(Dish::getStatus,1);
+        //添加排序条件
+        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+
+        List<Dish> list = dishService.list(queryWrapper);
+
+        return R.success(list);
+
+    }
+
 
 }
