@@ -118,4 +118,22 @@ public class AddressBookController {
         return R.success("删除成功！！！");
     }
 
+    /**
+     * 查询默认收获地址
+     * @param
+     * @return
+     */
+    @GetMapping("/default")
+    public R<AddressBook> getDefault(){
+        Long currentId = BaseContext.getCurrentId();
+        LambdaQueryWrapper<AddressBook> lambdaQueryWrapper =new LambdaQueryWrapper();
+        lambdaQueryWrapper.eq(null!=currentId,AddressBook::getUserId,currentId);
+        lambdaQueryWrapper.eq(AddressBook::getIsDefault,1);
+        AddressBook addressBookServiceOne = addressBookService.getOne(lambdaQueryWrapper);
+        if (null!=addressBookServiceOne){
+            return R.success(addressBookServiceOne);
+        }
+        return R.error("该用户没有设置默认地址");
+    }
+
 }
